@@ -12,7 +12,7 @@ import { Button } from './components/Button/Button';
 
 import {Spinner } from './components/Loader/Loader';
 import { Modal } from './components/Modal/Modal';
-
+import mapper from './components/maper/maper';
 
 export  class App extends Component {
   state = {
@@ -50,8 +50,9 @@ const { serchFoto, page} = this.state;
     return
   }
   this.setState(prevState => 
-    ({result: [...prevState.result, ...hits ], status: 'resollved',
+    ({result: [...prevState.result, ...mapper(hits) ], status: 'resollved',
  loading: false,
+
     }))})
 
 // .catch(error => this.setState({error, status: 'rejected'}))
@@ -66,7 +67,8 @@ nextPage = () => {
 }
 closeModal = () => {
    this.setState(prevState => ({
-     shouModal: !prevState.shouModal
+     shouModal: !prevState.shouModal, 
+    
    }))
 
 }
@@ -85,7 +87,7 @@ this.setState({
     render() {
 //serchFoto,
 
-      const {loading,  status, result, elemModal, shouModal } = this.state
+      const { loading, status, result, elemModal, shouModal } = this.state
 const bth = !(result.length < 12) 
 
         return( 
@@ -96,20 +98,20 @@ const bth = !(result.length < 12)
   result={result}
   clickImage={this.clickOnImage}
   /> }
- {bth && <Button nextPage={this.nextPage} loading={loading}
+ {bth && <Button nextPage={this.nextPage} loading={loading}  > 
 
- > <div><h2><Spinner/> </h2> </div> </Button>}
+ </Button>}
 
 
  </>}
 
-   {status === 'panding' && <div><h2>loading...<Spinner/></h2> </div>}
+   {status === 'panding' && <div><h2>loading...<Spinner /></h2> </div>}
 
       {status === 'idle' && <div>введите название поиска</div> }   
 
      {status === 'rejected' && <div><h1>Error</h1></div>}
 
- {shouModal && (<Modal alt={elemModal.alt } src={elemModal.src} onClose={this.closeModal}/>) }
+ {shouModal && (<Modal alt={elemModal.alt } src={elemModal.src} onClose={this.closeModal}/>) } 
         </div>
       )
     }
