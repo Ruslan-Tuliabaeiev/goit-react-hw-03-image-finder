@@ -76,7 +76,7 @@ html {
     width: 48px;
     height: 48px;
     border: 0;
-    background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
+    /* background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');  */
     background-size: 40%;
     background-repeat: no-repeat;
     background-position: center;
@@ -143,14 +143,14 @@ html {
       0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
   }
   
-  .ImageGalleryItem-image {
+  .ImageGalleryItemimage {
     width: 100%;
     height: 260px;
     object-fit: cover;
     transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  .ImageGalleryItem-image:hover {
+  .ImageGalleryItemimage:hover {
     transform: scale(1.03);
     cursor: zoom-in;
   }
@@ -181,6 +181,8 @@ html {
   * Стили компонента Buton (Load more)
   */
   .Button {
+    margin-top: 30px;
+    margin-left: 50%;
     padding: 8px 16px;
     border-radius: 2px;
     background-color: #3f51b5;
@@ -208,10 +210,12 @@ html {
 
 
   .spiner {
-  position: absolute;
-margin-top: 200px;
-  margin-left: 400px;
-padding-left: 45%;
-   padding-top: 45%;
+ position: absolute;
+
+ padding-left: 50%;
+padding-top: 30%;
+
   }
 
+
+  

@@ -20,11 +20,6 @@ if(this.state.serchFoto.trim() === ''){
      this.setState({ serchFoto: ''})
    }
 
-
-   
-
-
-
 render() {
   return (
 
@@ -35,10 +30,10 @@ render() {
     </button>
 
     <input className={style.SearchForminput}
-      class="input"
+      // class="input"
       type="text"
-      autocomplete="off"
-      autofocus
+      autoComplete="off"
+      autoFocus
       placeholder="Search images and photos" 
       name="serchFoto"
       value={this.state.serchFoto}

@@ -6,136 +6,117 @@ import { Component  } from 'react';
 import {Searchbar} from './components/Searchbar/Searchbar';
 //import SerchFotoInfo from './components/SerchFotoInfo';
 
-////////
-import { ImageGallery } from './components/ImageGallery/ImageGallery';
 
-import {Loader } from './components/Loader/Loader';
+import { ImageGallery } from './components/ImageGallery/ImageGallery';
+import { Button } from './components/Button/Button';
+
+import {Spinner } from './components/Loader/Loader';
+import { Modal } from './components/Modal/Modal';
 
 
 export  class App extends Component {
   state = {
     serchFoto:  '',
 
-    // fotoSerch: null,
     error: null,
+   
     status: '',
-    
+    loading: false ,
     result: [],
     page: 1,
+    shouModal: false,
+    elemModal: [],
   }
   
-  handleFormSubmit = serchFoto => {
-    this.setState({serchFoto});
-    console.log(serchFoto)
+  handleFormSubmit = (serch) => {
+    this.setState({serchFoto: serch, status: 'panding', page: 1, result: []});
+
   }
-
-
-
 
   componentDidUpdate(prevProps, prevState) {
-    const prevName = prevState.serchFoto;
-const nextName = this.state.serchFoto;
-  if(prevName !== nextName)  {
-  console.log('prevName:', prevName )
-  console.log('nextName:', nextName)
-  console.log('имя изминилось name');
-this.setState({status: 'panding'});
-  fetch(`https://pixabay.com/api/?q=${nextName}&page=1&key=24011003-4a9e2bf62a6e3281e228c94d5&image_type=photo&orientation=horizontal&per_page=12`)
-  //////////
+const { serchFoto, page} = this.state;
 
-.then(response => {
-    if (response.ok) {
-        return response.json()}
-    return Promise.reject(
-        new Error (`nothing found for this serch ${nextName}`))
+  if(prevState.serchFoto !== serchFoto || prevState.page !== page)  {
+
+  fetch(`https://pixabay.com/api/?q=${serchFoto}&page=${page}&key=24011003-4a9e2bf62a6e3281e228c94d5&image_type=photo&orientation=horizontal&per_page=12`)
+ 
+.then(response => response.json())
+  
+
+.then(({hits}) => {
+  if(hits.length === 0 ) {
+    // alert('Erorr')
+    this.setState({status: 'rejected'})
+    return
+  }
+  this.setState(prevState => 
+    ({result: [...prevState.result, ...hits ], status: 'resollved',
+ loading: false,
+    }))})
+
+// .catch(error => this.setState({error, status: 'rejected'}))
+
+}
+}
+nextPage = () => {
+ this.setState(prevState => ({
+   page: prevState.page + 1,
+   loading: true
+ }))
+}
+closeModal = () => {
+   this.setState(prevState => ({
+     shouModal: !prevState.shouModal
+   }))
+
+}
+clickOnImage = event => {
+  const src = event.target.getAttribute('data-url')
+const alt = event.target.getAttribute('alt')
+console.log( src, alt)
+this.setState({
+  shouModal: true ,  
+  elemModal: {src, alt}
 })
-///////////////
-
-.then(console.log)
-.then(fotoSerch => this.setState({fotoSerch, status: 'resollved'}))
-.catch(error => this.setState({error, status: 'rejected'}))
-
-}
 }
 
 
 
-
-
-
-  
     render() {
+//serchFoto,
+
+      const {loading,  status, result, elemModal, shouModal } = this.state
+const bth = !(result.length < 12) 
+
+        return( 
+   <div>
+ <Searchbar onSubmit={this.handleFormSubmit}/>
+
+ {status === 'resollved' && <>{ <ImageGallery
+  result={result}
+  clickImage={this.clickOnImage}
+  /> }
+ {bth && <Button nextPage={this.nextPage} loading={loading}
+
+ > <div><h2><Spinner/> </h2> </div> </Button>}
 
 
-      const {serchFoto, error, status } = this.state
+ </>}
 
-      if (status === 'idle') {
-          return <div>введите название поиска</div>
-      }
-      if (status === 'panding') {
-          return <div><h2>loading... </h2> <Loader/></div>
-      }
-      if (status === 'rejected') {
-          return <div><h1>{error.message}</h1></div>
-      }
-       //resollved.length
-      if (status === 'resollved') {
-          return <div>
-              <ImageGallery serchFoto={serchFoto}/>
-              </div>
-      }
-       
-      
+   {status === 'panding' && <div><h2>loading...<Spinner/></h2> </div>}
 
+      {status === 'idle' && <div>введите название поиска</div> }   
 
-      return(
-         
-        <div>
-  <Searchbar onSubmit={this.handleFormSubmit}/>
-  
-  
+     {status === 'rejected' && <div><h1>Error</h1></div>}
+
+ {shouModal && (<Modal alt={elemModal.alt } src={elemModal.src} onClose={this.closeModal}/>) }
         </div>
       )
     }
   };
   
 
-  ///<SerchFotoInfo serchFoto={this.state.serchFoto}/>
-
-
-
 export default App;
-/////////////////////////
-
-///////////////////
-
-
-// export  class App extends Component {
-//   state = {
-//     serchFoto:  '',
-//     page: 1,
-//     loading: false ,
-//     result: [],
-//   }
-  
-//   handleFormSubmit = serchFoto => {
-//     this.setState({serchFoto});
-//     console.log(serchFoto)
-//   }
-  
-//     render() {
-     
-//       return(
-         
-//         <div>
-//   <Searchbar onSubmit={this.handleFormSubmit}/>
-//   <SerchFotoInfo serchFoto={this.state.serchFoto}/>
-  
-//         </div>
-//       )
-//     }
-//   };
-  
 
 
 
